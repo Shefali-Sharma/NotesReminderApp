@@ -40,3 +40,36 @@ func Register(c *fiber.Ctx) error {
 
 	return c.JSON(user)
 }
+
+// Login allows users to access their account
+func Login(c *fiber.Ctx) error {
+	var data map[string]string
+
+	err := c.BodyParser(&data)
+
+	if err != nil {
+		return err
+	}
+
+	var user models.User
+
+	database.DB.Where("email = ?", data["email"]).First(&user)
+
+	if user.ID == 0 {
+		c.Status(404)
+		return c.JSON(fiber.Map{
+			"messgae": "User not found.",
+		})
+	}
+
+	err = bcrypt.CompareHashAndPassword(user.Password, []byte(data["password"]))
+
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"messgae": "Incorrect password",
+		})
+	}
+
+	return c.JSON(user)
+}
