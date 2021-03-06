@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
 // AuthConnect is used for establishing connection with Auth Database
 func AuthConnect() {
 	dsn := "host=localhost user=root password=root dbname=notesauth port=5434 sslmode=disable"
@@ -15,6 +17,8 @@ func AuthConnect() {
 	if err != nil {
 		panic("Could not connect to authDatabase")
 	}
+
+	DB = connection
 
 	connection.AutoMigrate(&models.User{})
 
