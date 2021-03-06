@@ -2,9 +2,12 @@ package controllers
 
 import (
 	"notes-reminder-app/database"
+	"strconv"
+	"time"
 
 	"notes-reminder-app/models"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 
 	"golang.org/x/crypto/bcrypt"
@@ -71,5 +74,32 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(user)
+	claims := jwt.StandardClaims{
+		Id:        strconv.Itoa(int(user.ID)),
+		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+	}
+
+	signed := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	token, err := signed.SignedString([]byte("mysecretkey"))
+
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"message": "Internal Server Error",
+		})
+	}
+
+	cookie := fiber.Cookie{
+		Name:     "token",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	// return c.JSON(user)
+	return c.JSON(fiber.Map{
+		"token": token,
+	})
 }
