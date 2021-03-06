@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"math/rand"
+	"net/smtp"
+	"notes-reminder-app/credentials"
 	"notes-reminder-app/database"
 	"notes-reminder-app/models"
 
@@ -26,6 +28,35 @@ func Forgot(c *fiber.Ctx) error {
 	}
 
 	database.DB.Create(&passwordReset)
+
+	var creds credentials.AuthCreds
+	creds.GetCreds()
+
+	from := creds.Email
+	password := creds.Password
+
+	to := []string{
+		data["email"],
+	}
+
+	url := "http://localhost:3000/reset/" + token
+
+	message := "Click <a href=\"" + url + "\"> here </a> to reset your password! >"
+
+	smtpServer := models.SMTPServer{
+		Host: "smtp.gmail.com",
+		Port: "587",
+	}
+
+	auth := smtp.PlainAuth("", from, password, smtpServer.Host)
+
+	err = smtp.SendMail(smtpServer.AddressUpdate(), auth, from, to, []byte(message))
+
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"message": "Unable to reset password.",
+		})
+	}
 
 	return c.JSON(fiber.Map{
 		"message": "Password reset successfully",
