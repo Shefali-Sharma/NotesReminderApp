@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// Setup starts the helloWorld function
+// Setup function to start User registration
 func Setup(app *fiber.App) {
-	app.Get("/", controllers.HelloWorld)
+	app.Post("/api/register", controllers.Register)
 }
