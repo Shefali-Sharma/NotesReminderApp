@@ -13,6 +13,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Claims struct for passing for parsing
+type Claims struct {
+	jwt.StandardClaims
+}
+
 // Register allows users to create an account
 func Register(c *fiber.Ctx) error {
 	var data map[string]string
@@ -74,8 +79,9 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
+	// We use userID as the issuer
 	claims := jwt.StandardClaims{
-		Id:        strconv.Itoa(int(user.ID)),
+		Issuer:    strconv.Itoa(int(user.ID)),
 		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 	}
 
@@ -102,4 +108,30 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"token": token,
 	})
+}
+
+// User returns back authenticated user back
+func User(c *fiber.Ctx) error {
+	cookie := c.Cookies("token")
+
+	// Cookie should have the claims attached to it
+	token, err := jwt.ParseWithClaims(cookie, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("mysecretkey"), nil
+	})
+
+	if err != nil || !token.Valid {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "Unauthenticated user",
+		})
+	}
+
+	claims := token.Claims.(*Claims)
+
+	var user models.User
+
+	// Issuer which was used as userID during Login is used to now fetch data back from DB
+	database.DB.Where("id = ?", claims.Issuer).First(&user)
+
+	return c.JSON(user)
 }
