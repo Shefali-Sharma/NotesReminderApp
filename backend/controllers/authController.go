@@ -135,3 +135,21 @@ func User(c *fiber.Ctx) error {
 
 	return c.JSON(user)
 }
+
+// Logout makes the user session end by setting the cookie as expired
+func Logout(c *fiber.Ctx) error {
+	// We set the time here as -1 hour = to suggest that the cookie was expired an hour ago.
+	// This is a way to expire the cookies upon logout!
+	cookie := fiber.Cookie{
+		Name:     "token",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	return c.JSON(fiber.Map{
+		"message": "Logout successful",
+	})
+}

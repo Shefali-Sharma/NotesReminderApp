@@ -6,9 +6,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// Setup function to start User registration
+// Setup function to initialize routes for different operations
 func Setup(app *fiber.App) {
 	app.Post("/api/register", controllers.Register)
 	app.Post("/api/login", controllers.Login)
-	app.Post("/api/user", controllers.User)
+	app.Get("/api/user", controllers.User)
+	app.Post("/api/logout", controllers.Logout)
 }
