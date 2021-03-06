@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+// Connect is used for setting up connection with NotesDB
 func Connect() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

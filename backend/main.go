@@ -2,7 +2,6 @@ package main
 
 import (
 	"notes-reminder-app/database"
-
 	"notes-reminder-app/routes"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,7 +9,7 @@ import (
 
 func main() {
 
-	database.Connect()
+	database.AuthConnect()
 
 	app := fiber.New()
 
