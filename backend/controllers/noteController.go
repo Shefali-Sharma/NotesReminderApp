@@ -96,7 +96,7 @@ func EditNote(c *fiber.Ctx) error {
 
 	json.Unmarshal([]byte(c.Body()), &note)
 
-	filter := bson.M{"subject": data["subject"]}
+	filter := bson.M{"subject": data["subject"], "email": user.Email}
 
 	update := bson.M{
 		"$set": note,
@@ -118,7 +118,7 @@ func EditNote(c *fiber.Ctx) error {
 
 // DeleteNote allows user to remove a note
 func DeleteNote(c *fiber.Ctx) error {
-	_, err := GetCurrentUser(c)
+	user, err := GetCurrentUser(c)
 
 	if err != nil {
 		c.Status(400)
@@ -144,7 +144,7 @@ func DeleteNote(c *fiber.Ctx) error {
 		return err
 	}
 
-	filter := bson.M{"subject": data["subject"]}
+	filter := bson.M{"subject": data["subject"], "email": user.Email}
 
 	res, err := collection.DeleteOne(context.Background(), filter)
 
@@ -162,7 +162,7 @@ func DeleteNote(c *fiber.Ctx) error {
 
 // GetNote fetches note that user is searching
 func GetNote(c *fiber.Ctx) error {
-	_, err := GetCurrentUser(c)
+	user, err := GetCurrentUser(c)
 
 	if err != nil {
 		c.Status(400)
@@ -190,7 +190,7 @@ func GetNote(c *fiber.Ctx) error {
 		return err
 	}
 
-	filter = bson.M{"subject": data["subject"]}
+	filter = bson.M{"subject": data["subject"], "email": user.Email}
 
 	var results []bson.M
 	cur, err := collection.Find(context.Background(), filter)
@@ -219,7 +219,7 @@ func GetNote(c *fiber.Ctx) error {
 
 // GetNoteAll fetches all notes for a user
 func GetNoteAll(c *fiber.Ctx) error {
-	_, err := GetCurrentUser(c)
+	user, err := GetCurrentUser(c)
 
 	if err != nil {
 		c.Status(400)
@@ -247,7 +247,7 @@ func GetNoteAll(c *fiber.Ctx) error {
 		return err
 	}
 
-	filter = bson.M{}
+	filter = bson.M{"email": user.Email}
 
 	var results []bson.M
 	cur, err := collection.Find(context.Background(), filter)
@@ -300,6 +300,7 @@ func GetCurrentUser(c *fiber.Ctx) (models.User, error) {
 	return user, nil
 }
 
+// getMongoDbCollection returns mongoDB collection for the Database notesDB
 func getMongoDbCollection(CollectionName string) (*mongo.Collection, error) {
 
 	collection := database.MongoDB.Database("notesDB").Collection(CollectionName)
