@@ -3,13 +3,12 @@ package controllers
 import (
 	"context"
 	"encoding/json"
-	"notes-reminder-app/database"
 	"notes-reminder-app/models"
+	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // CreateNote allows users to create a Note
@@ -23,7 +22,7 @@ func CreateNote(c *fiber.Ctx) error {
 		})
 	}
 
-	collection, err := getMongoDbCollection("notes")
+	collection, err := getMongoDbCollection("notesDB", "notes")
 	if err != nil {
 		c.Status(500)
 		return c.JSON(fiber.Map{
@@ -40,9 +39,10 @@ func CreateNote(c *fiber.Ctx) error {
 	}
 
 	note := models.Note{
-		Subject: data["subject"],
-		Content: data["content"],
-		Email:   user.Email,
+		Subject:     data["subject"],
+		Content:     data["content"],
+		Email:       user.Email,
+		LastUpdated: time.Now(),
 	}
 
 	json.Unmarshal([]byte(c.Body()), &note)
@@ -71,7 +71,7 @@ func EditNote(c *fiber.Ctx) error {
 		})
 	}
 
-	collection, err := getMongoDbCollection("notes")
+	collection, err := getMongoDbCollection("notesDB", "notes")
 
 	if err != nil {
 		c.Status(500)
@@ -89,9 +89,10 @@ func EditNote(c *fiber.Ctx) error {
 	}
 
 	note := models.Note{
-		Subject: data["subject"],
-		Content: data["content"],
-		Email:   user.Email,
+		Subject:     data["subject"],
+		Content:     data["content"],
+		Email:       user.Email,
+		LastUpdated: time.Now(),
 	}
 
 	json.Unmarshal([]byte(c.Body()), &note)
@@ -127,7 +128,7 @@ func DeleteNote(c *fiber.Ctx) error {
 		})
 	}
 
-	collection, err := getMongoDbCollection("notes")
+	collection, err := getMongoDbCollection("notesDB", "notes")
 
 	if err != nil {
 		c.Status(500)
@@ -171,7 +172,7 @@ func GetNote(c *fiber.Ctx) error {
 		})
 	}
 
-	collection, err := getMongoDbCollection("notes")
+	collection, err := getMongoDbCollection("notesDB", "notes")
 
 	if err != nil {
 		c.Status(500)
@@ -228,7 +229,7 @@ func GetNoteAll(c *fiber.Ctx) error {
 		})
 	}
 
-	collection, err := getMongoDbCollection("notes")
+	collection, err := getMongoDbCollection("notesDB", "notes")
 
 	if err != nil {
 		c.Status(500)
@@ -249,8 +250,12 @@ func GetNoteAll(c *fiber.Ctx) error {
 
 	filter = bson.M{"email": user.Email}
 
+	queryOptions := options.FindOptions{}
+	queryOptions.SetSort(bson.M{"lastupdated": -1})
+
 	var results []bson.M
-	cur, err := collection.Find(context.Background(), filter)
+	cur, err := collection.Find(context.Background(), filter, &queryOptions)
+
 	defer cur.Close(context.Background())
 
 	if err != nil {
@@ -272,38 +277,4 @@ func GetNoteAll(c *fiber.Ctx) error {
 	response, _ := json.Marshal(results)
 
 	return c.Send(response)
-}
-
-// GetCurrentUser returns value of current user or error if the user is not logged in
-func GetCurrentUser(c *fiber.Ctx) (models.User, error) {
-	var user models.User
-
-	cookie := c.Cookies("token")
-
-	// Cookie should have the claims attached to it
-	token, err := jwt.ParseWithClaims(cookie, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte("mysecretkey"), nil
-	})
-
-	if err != nil || !token.Valid {
-		c.Status(400)
-		return user, c.JSON(fiber.Map{
-			"message": "Unauthenticated user",
-		})
-	}
-
-	claims := token.Claims.(*Claims)
-
-	// Issuer which was used as userID during Login is used to now fetch data back from DB
-	database.DB.Where("id = ?", claims.Issuer).First(&user)
-
-	return user, nil
-}
-
-// getMongoDbCollection returns mongoDB collection for the Database notesDB
-func getMongoDbCollection(CollectionName string) (*mongo.Collection, error) {
-
-	collection := database.MongoDB.Database("notesDB").Collection(CollectionName)
-
-	return collection, nil
 }
