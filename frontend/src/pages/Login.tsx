@@ -2,7 +2,7 @@ import React, { SyntheticEvent, useState } from 'react';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 
-const Login = () => {
+const Login = ({setLogin} : {setLogin: Function}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [redirect, setRedirect] = useState(false);
@@ -10,13 +10,13 @@ const Login = () => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
         
-        const response = await axios.post("http://localhost:8000/api/login", {
+        await axios.post("http://localhost:8000/api/login", {
             email: email,
             password: password
         });
-        console.log(response)
-        setRedirect(true)
-
+        
+        setRedirect(true);
+        setLogin();
     }
 
     if(redirect) {

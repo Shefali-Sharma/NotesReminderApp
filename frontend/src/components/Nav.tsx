@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const Nav = ({ user }: { user: any }) => {
+const Nav = ({ user, setLogin }: { user: any , setLogin: Function}) => {
     const logout = async () => {
-        const response = await axios.post("http://localhost:8000/api/logout", {});
+        await axios.post("http://localhost:8000/api/logout", {});
+
+        setLogin();
     }
 
     let links;
