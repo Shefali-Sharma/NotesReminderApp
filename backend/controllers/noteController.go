@@ -63,6 +63,7 @@ func CreateNote(c *fiber.Ctx) error {
 	return c.Send(response)
 }
 
+// EditNote allows updating content of a given note
 func EditNote(c *fiber.Ctx) error {
 	user, err := GetCurrentUser(c)
 
@@ -73,7 +74,49 @@ func EditNote(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(user)
+	collection, err := getMongoDbCollection("notes")
+
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to connect to NotesDB",
+		})
+	}
+
+	var data map[string]string
+
+	err = c.BodyParser(&data)
+
+	if err != nil {
+		return err
+	}
+
+	note := models.Note{
+		Subject: data["subject"],
+		Content: data["content"],
+		Email:   user.Email,
+	}
+
+	json.Unmarshal([]byte(c.Body()), &note)
+
+	filter := bson.M{"subject": data["subject"]}
+
+	update := bson.M{
+		"$set": note,
+	}
+
+	res, err := collection.UpdateOne(context.Background(), filter, update)
+
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to update note",
+		})
+	}
+
+	response, _ := json.Marshal(res)
+
+	return c.Send(response)
 }
 
 func DeleteNote(c *fiber.Ctx) error {
