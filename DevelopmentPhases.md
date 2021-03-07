@@ -2,13 +2,13 @@
 This document lists various development Phases.
 
 ## Phase 1
-The goal for Phase1 is to establish successful connection between thr frontend and the backend. 
+The goal for Phase1 is to establish a successful connection between the frontend and the backend. 
 
-There is also focus on estabilishing authentication to allow:
+There is also a focus on establishing authentication to allow:
 * Registration: Creation of User Account
 * Login: Allow users to login into their accounts
 * Get User: Establish the ability to fetch user info - which will be used in Phase 2 for Notebooks and Notes creation - different to each user.
-* Logout: Ability to end session for a user
+* Logout: Ability to end the session for a user
 * (STRETCH GOAL) Reset Password: Ability to update the password for a user by sending a link via email to authenticate and create a new password.
 
 ### Different components include:
