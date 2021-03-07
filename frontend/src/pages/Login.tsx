@@ -14,7 +14,7 @@ const Login = () => {
             email: email,
             password: password
         });
-
+        console.log(response)
         setRedirect(true)
 
     }

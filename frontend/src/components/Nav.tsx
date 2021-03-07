@@ -1,7 +1,40 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
-const Nav = () => {
+const Nav = ({ user }: { user: any }) => {
+    const logout = async () => {
+        const response = await axios.post("http://localhost:8000/api/logout", {});
+    }
+
+    let links;
+
+    if (user) {
+        links = (
+        <ul className="navbar-nav mr-auto">
+            <li className="nav-item active">
+                <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
+            </li>
+            <li className="nav-item">
+                <Link className="nav-link" onClick={logout} to="/">Logout</Link>
+            </li>
+        </ul>
+        );
+    } else {
+        links = (
+        <ul className="navbar-nav mr-auto">
+            <li className="nav-item active">
+                <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
+            </li>
+            <li className="nav-item">
+                <Link className="nav-link" to="/login">Login</Link>
+            </li>
+            <li className="nav-item">
+                <Link className="nav-link" to="/register">SignUp</Link>
+            </li>
+        </ul>
+        );
+    }
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <Link className="navbar-brand" to="/">Notes Application</Link>
@@ -10,17 +43,7 @@ const Nav = () => {
             </button>
 
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul className="navbar-nav mr-auto">
-                    <li className="nav-item active">
-                        <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/login">Login</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/register">SignUp</Link>
-                    </li>
-                </ul>
+                {links}
             </div>
 
         </nav>
