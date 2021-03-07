@@ -14,4 +14,10 @@ func Setup(app *fiber.App) {
 	app.Post("/api/logout", controllers.Logout)
 	app.Post("/api/forgot", controllers.Forgot)
 	app.Post("/api/reset", controllers.Reset)
+
+	app.Post("/api/note", controllers.CreateNote)
+	app.Put("/api/note/:id", controllers.EditNote)
+	app.Delete("/api/note/:id", controllers.DeleteNote)
+	app.Get("/api/note/:id", controllers.GetNote)
+	app.Get("/api/note", controllers.GetNoteAll)
 }

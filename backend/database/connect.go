@@ -12,6 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+// MongoDB client connection to allow interaction for notes and notebooks
+var MongoDB *mongo.Client
+
 // Connect is used for setting up connection with NotesDB
 func Connect() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -34,4 +37,6 @@ func Connect() {
 	}
 
 	fmt.Println(databases)
+
+	MongoDB = client
 }

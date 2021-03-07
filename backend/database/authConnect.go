@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// DB is connection with PostgresSQL which stores User authentication information
 var DB *gorm.DB
 
 // AuthConnect is used for establishing connection with Auth Database
