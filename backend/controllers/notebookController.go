@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // CreateNoteBook allows users to create a NoteBook
@@ -40,9 +41,9 @@ func CreateNoteBook(c *fiber.Ctx) error {
 	notes := strings.Split(data["notes"], ",")
 
 	notebook := models.NoteBook{
+		Email:       user.Email,
 		Name:        data["name"],
 		Notes:       notes,
-		Email:       user.Email,
 		LastUpdated: time.Now(),
 	}
 
@@ -61,61 +62,64 @@ func CreateNoteBook(c *fiber.Ctx) error {
 	return c.Send(response)
 }
 
-// // EditNoteBook allows adding or deleting notes from a notebook
-// func EditNoteBook(c *fiber.Ctx) error {
-// 	user, err := GetCurrentUser(c)
+// EditNoteBook allows adding or deleting notes from a notebook
+func EditNoteBook(c *fiber.Ctx) error {
+	user, err := GetCurrentUser(c)
 
-// 	if err != nil {
-// 		c.Status(400)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unauthenticated user",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "Unauthenticated user",
+		})
+	}
 
-// 	collection, err := getMongoDbCollection("notesDB", "notebooks")
+	collection, err := getMongoDbCollection("notesDB", "notebooks")
 
-// 	if err != nil {
-// 		c.Status(500)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to connect to NotesDB",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to connect to NotesDB",
+		})
+	}
 
-// 	var data map[string]string
+	var data map[string]string
 
-// 	err = c.BodyParser(&data)
+	err = c.BodyParser(&data)
 
-// 	if err != nil {
-// 		return err
-// 	}
+	if err != nil {
+		return err
+	}
 
-// 	note := models.Note{
-// 		Subject: data["subject"],
-// 		Content: data["content"],
-// 		Email:   user.Email,
-// 	}
+	notes := strings.Split(data["notes"], ",")
 
-// 	json.Unmarshal([]byte(c.Body()), &note)
+	notebook := models.NoteBook{
+		Email:       user.Email,
+		Name:        data["name"],
+		Notes:       notes,
+		LastUpdated: time.Now(),
+	}
 
-// 	filter := bson.M{"subject": data["subject"], "email": user.Email}
+	json.Unmarshal([]byte(c.Body()), &notebook)
 
-// 	update := bson.M{
-// 		"$set": note,
-// 	}
+	filter := bson.M{"name": data["name"], "email": user.Email}
 
-// 	res, err := collection.UpdateOne(context.Background(), filter, update)
+	update := bson.M{
+		"$set": notebook,
+	}
 
-// 	if err != nil {
-// 		c.Status(500)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to update note",
-// 		})
-// 	}
+	res, err := collection.UpdateOne(context.Background(), filter, update)
 
-// 	response, _ := json.Marshal(res)
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to update notebook",
+		})
+	}
 
-// 	return c.Send(response)
-// }
+	response, _ := json.Marshal(res)
+
+	return c.Send(response)
+}
 
 // // DeleteNoteBook allows a user to remove a notebook
 // func DeleteNoteBook(c *fiber.Ctx) error {
