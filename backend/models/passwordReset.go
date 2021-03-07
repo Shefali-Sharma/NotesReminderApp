@@ -3,8 +3,8 @@ package models
 // PasswordReset helps user reset password
 type PasswordReset struct {
 	ID    uint
-	Email string
-	Token string
+	Email string `json:"email"`
+	Token string `json:"token"`
 }
 
 // SMTPServer used for sending emails for password reset
