@@ -53,7 +53,7 @@ func CreateNoteBook(c *fiber.Ctx) error {
 	if err != nil {
 		c.Status(500)
 		return c.JSON(fiber.Map{
-			"message": "Unable to create note",
+			"message": "Unable to create notebook",
 		})
 	}
 
@@ -156,7 +156,7 @@ func DeleteNoteBook(c *fiber.Ctx) error {
 	if err != nil {
 		c.Status(500)
 		return c.JSON(fiber.Map{
-			"message": "Unable to find note",
+			"message": "Unable to find notebook",
 		})
 	}
 
@@ -165,62 +165,62 @@ func DeleteNoteBook(c *fiber.Ctx) error {
 	return c.Send(response)
 }
 
-// // GetNoteBook fetches a notebook
-// func GetNoteBook(c *fiber.Ctx) error {
-// 	user, err := GetCurrentUser(c)
+// GetNoteBook fetches a notebook
+func GetNoteBook(c *fiber.Ctx) error {
+	user, err := GetCurrentUser(c)
 
-// 	if err != nil {
-// 		c.Status(400)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unauthenticated user",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "Unauthenticated user",
+		})
+	}
 
-// 	collection, err := getMongoDbCollection("notesDB", "notebooks")
+	collection, err := getMongoDbCollection("notesDB", "notebooks")
 
-// 	if err != nil {
-// 		c.Status(500)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to connect to NotesDB",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to connect to NotesDB",
+		})
+	}
 
-// 	var filter bson.M = bson.M{}
+	var filter bson.M = bson.M{}
 
-// 	var data map[string]string
+	var data map[string]string
 
-// 	err = c.BodyParser(&data)
+	err = c.BodyParser(&data)
 
-// 	if err != nil {
-// 		return err
-// 	}
+	if err != nil {
+		return err
+	}
 
-// 	filter = bson.M{"subject": data["subject"], "email": user.Email}
+	filter = bson.M{"name": data["name"], "email": user.Email}
 
-// 	var results []bson.M
-// 	cur, err := collection.Find(context.Background(), filter)
-// 	defer cur.Close(context.Background())
+	var results []bson.M
+	cur, err := collection.Find(context.Background(), filter)
+	defer cur.Close(context.Background())
 
-// 	if err != nil {
-// 		c.Status(500)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to find note",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find notebook",
+		})
+	}
 
-// 	cur.All(context.Background(), &results)
+	cur.All(context.Background(), &results)
 
-// 	if results == nil {
-// 		c.SendStatus(404)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to find note",
-// 		})
-// 	}
+	if results == nil {
+		c.SendStatus(404)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find notebook",
+		})
+	}
 
-// 	response, _ := json.Marshal(results)
+	response, _ := json.Marshal(results)
 
-// 	return c.Send(response)
-// }
+	return c.Send(response)
+}
 
 // // GetNoteBookAll fetches all notebooks for a user
 // func GetNoteBookAll(c *fiber.Ctx) error {
@@ -261,7 +261,7 @@ func DeleteNoteBook(c *fiber.Ctx) error {
 // 	if err != nil {
 // 		c.Status(500)
 // 		return c.JSON(fiber.Map{
-// 			"message": "Unable to find note",
+// 			"message": "Unable to find notebook",
 // 		})
 // 	}
 
@@ -270,7 +270,7 @@ func DeleteNoteBook(c *fiber.Ctx) error {
 // 	if results == nil {
 // 		c.SendStatus(404)
 // 		return c.JSON(fiber.Map{
-// 			"message": "Unable to find note",
+// 			"message": "Unable to find notebook",
 // 		})
 // 	}
 
