@@ -121,49 +121,49 @@ func EditNoteBook(c *fiber.Ctx) error {
 	return c.Send(response)
 }
 
-// // DeleteNoteBook allows a user to remove a notebook
-// func DeleteNoteBook(c *fiber.Ctx) error {
-// 	user, err := GetCurrentUser(c)
+// DeleteNoteBook allows a user to remove a notebook
+func DeleteNoteBook(c *fiber.Ctx) error {
+	user, err := GetCurrentUser(c)
 
-// 	if err != nil {
-// 		c.Status(400)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unauthenticated user",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "Unauthenticated user",
+		})
+	}
 
-// 	collection, err := getMongoDbCollection("notesDB", "notebooks")
+	collection, err := getMongoDbCollection("notesDB", "notebooks")
 
-// 	if err != nil {
-// 		c.Status(500)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to connect to NotesDB",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to connect to NotesDB",
+		})
+	}
 
-// 	var data map[string]string
+	var data map[string]string
 
-// 	err = c.BodyParser(&data)
+	err = c.BodyParser(&data)
 
-// 	if err != nil {
-// 		return err
-// 	}
+	if err != nil {
+		return err
+	}
 
-// 	filter := bson.M{"subject": data["subject"], "email": user.Email}
+	filter := bson.M{"name": data["name"], "email": user.Email}
 
-// 	res, err := collection.DeleteOne(context.Background(), filter)
+	res, err := collection.DeleteOne(context.Background(), filter)
 
-// 	if err != nil {
-// 		c.Status(500)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to find note",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find note",
+		})
+	}
 
-// 	response, _ := json.Marshal(res)
+	response, _ := json.Marshal(res)
 
-// 	return c.Send(response)
-// }
+	return c.Send(response)
+}
 
 // // GetNoteBook fetches a notebook
 // func GetNoteBook(c *fiber.Ctx) error {
