@@ -9,6 +9,7 @@ type Note struct {
 	Subject     string    `json:"subject"`
 	Content     string    `json:"content"`
 	LastUpdated time.Time `json:"lastupdated"`
+	// NoteBookName string    `json:"notebookname"`
 }
 
 // NoteBook Schema consists a list of Notes
