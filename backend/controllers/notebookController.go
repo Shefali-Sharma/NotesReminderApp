@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // CreateNoteBook allows users to create a NoteBook
@@ -222,59 +223,63 @@ func GetNoteBook(c *fiber.Ctx) error {
 	return c.Send(response)
 }
 
-// // GetNoteBookAll fetches all notebooks for a user
-// func GetNoteBookAll(c *fiber.Ctx) error {
-// 	user, err := GetCurrentUser(c)
+// GetNoteBookAll fetches all notebooks for a user
+func GetNoteBookAll(c *fiber.Ctx) error {
+	user, err := GetCurrentUser(c)
 
-// 	if err != nil {
-// 		c.Status(400)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unauthenticated user",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "Unauthenticated user",
+		})
+	}
 
-// 	collection, err := getMongoDbCollection("notesDB", "notes")
+	collection, err := getMongoDbCollection("notesDB", "notebooks")
 
-// 	if err != nil {
-// 		c.Status(500)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to connect to NotesDB",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to connect to NotesDB",
+		})
+	}
 
-// 	var filter bson.M = bson.M{}
+	var filter bson.M = bson.M{}
 
-// 	var data map[string]string
+	var data map[string]string
 
-// 	err = c.BodyParser(&data)
+	err = c.BodyParser(&data)
 
-// 	if err != nil {
-// 		return err
-// 	}
+	if err != nil {
+		return err
+	}
 
-// 	filter = bson.M{"email": user.Email}
+	filter = bson.M{"email": user.Email}
 
-// 	var results []bson.M
-// 	cur, err := collection.Find(context.Background(), filter)
-// 	defer cur.Close(context.Background())
+	queryOptions := options.FindOptions{}
+	queryOptions.SetSort(bson.M{"lastupdated": -1})
 
-// 	if err != nil {
-// 		c.Status(500)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to find notebook",
-// 		})
-// 	}
+	var results []bson.M
+	cur, err := collection.Find(context.Background(), filter, &queryOptions)
 
-// 	cur.All(context.Background(), &results)
+	defer cur.Close(context.Background())
 
-// 	if results == nil {
-// 		c.SendStatus(404)
-// 		return c.JSON(fiber.Map{
-// 			"message": "Unable to find notebook",
-// 		})
-// 	}
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find notebooks",
+		})
+	}
 
-// 	response, _ := json.Marshal(results)
+	cur.All(context.Background(), &results)
 
-// 	return c.Send(response)
-// }
+	if results == nil {
+		c.SendStatus(404)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find notebooks",
+		})
+	}
+
+	response, _ := json.Marshal(results)
+
+	return c.Send(response)
+}
