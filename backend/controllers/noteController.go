@@ -9,6 +9,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -27,7 +28,7 @@ func CreateNote(c *fiber.Ctx) error {
 	if err != nil {
 		c.Status(500)
 		return c.JSON(fiber.Map{
-			"message": "Unable to coonect to NotesDB",
+			"message": "Unable to connect to NotesDB",
 		})
 	}
 
@@ -51,7 +52,7 @@ func CreateNote(c *fiber.Ctx) error {
 	if err != nil {
 		c.Status(500)
 		return c.JSON(fiber.Map{
-			"message": "Unable to coonect to NotesDB",
+			"message": "Unable to create note",
 		})
 	}
 
@@ -59,7 +60,7 @@ func CreateNote(c *fiber.Ctx) error {
 
 	response, _ := json.Marshal(res)
 
-	return c.JSON(response)
+	return c.Send(response)
 }
 
 func EditNote(c *fiber.Ctx) error {
@@ -88,8 +89,9 @@ func DeleteNote(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
+// GetNote fetches note that user is searching
 func GetNote(c *fiber.Ctx) error {
-	user, err := GetCurrentUser(c)
+	_, err := GetCurrentUser(c)
 
 	if err != nil {
 		c.Status(400)
@@ -98,7 +100,50 @@ func GetNote(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(user)
+	collection, err := getMongoDbCollection("notes")
+
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to connect to NotesDB",
+		})
+	}
+
+	var filter bson.M = bson.M{}
+
+	var data map[string]string
+
+	err = c.BodyParser(&data)
+
+	if err != nil {
+		return err
+	}
+
+	filter = bson.M{"subject": data["subject"]}
+
+	var results []bson.M
+	cur, err := collection.Find(context.Background(), filter)
+	defer cur.Close(context.Background())
+
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find note",
+		})
+	}
+
+	cur.All(context.Background(), &results)
+
+	if results == nil {
+		c.SendStatus(404)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find note",
+		})
+	}
+
+	response, _ := json.Marshal(results)
+
+	return c.Send(response)
 }
 
 func GetNoteAll(c *fiber.Ctx) error {
