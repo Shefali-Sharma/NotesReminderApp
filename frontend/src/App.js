@@ -31,23 +31,30 @@ function App() {
   return (
     
       <BrowserRouter>
-        <div>
-          <Nav user={user} setLogin={() => setLogin(false)}/>
-        </div>
-        <abc className="text-center">
-          <main className="form-signin">
-            <div className="App">
-              <Route path="/" exact component={() => <Home user={user} />} />
+        <Nav user={user} setLogin={() => setLogin(false)}/>
+        <Route path="/" exact component={() => <Home user={user} />} />
+        {!login && (
+          <div style={{ verticalAlign: "center", paddingLeft: "600px", paddingTop: "200px" }}>
               <Route path="/login" component={() => <Login setLogin={() => setLogin(true)}/>} />
               <Route path="/register" component={Register} />
               <Route path="/forgot" component={Forgot} />
               <Route path="/reset/:token" component={Reset} />
             </div>
-          </main>
-        </abc>
+        )}
       </BrowserRouter>
-    
+      
   );
 }
 
 export default App;
+
+{/* <abc>
+<main className="form-signin">
+  <div className="App">
+    <Route path="/login" component={() => <Login setLogin={() => setLogin(true)}/>} />
+    <Route path="/register" component={Register} />
+    <Route path="/forgot" component={Forgot} />
+    <Route path="/reset/:token" component={Reset} />
+  </div>
+</main>
+</abc> */}

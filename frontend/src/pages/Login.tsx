@@ -1,5 +1,6 @@
 import React, { SyntheticEvent, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
+import { Form, Grid } from 'semantic-ui-react'
 import axios from 'axios';
 
 const Login = ({ setLogin }: { setLogin: Function }) => {
@@ -24,22 +25,26 @@ const Login = ({ setLogin }: { setLogin: Function }) => {
     }
 
     return (
-        <form onSubmit={submit}>
-            <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+        <Grid centered textAlign='right' style={{ height: '100vh' }} verticalAlign='middle'>
+            <Grid.Column style={{ maxWidth: 450 }}>
+                <Form onSubmit={submit}>
+                    <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
 
-            <input type="email" className="form-control" placeholder="Email" required autoFocus
-                onChange={e => setEmail(e.target.value)} />
+                    <input type="email" className="form-control" placeholder="Email" required autoFocus
+                        onChange={e => setEmail(e.target.value)} />
 
-            <input type="password" className="form-control" placeholder="Password" required
-                onChange={e => setPassword(e.target.value)} />
+                    <input type="password" className="form-control" placeholder="Password" required
+                        onChange={e => setPassword(e.target.value)} />
 
-            <div className="mb-3"> 
-                <Link to="/forgot">Forgot Password?</Link>
-            </div>
+                    <div className="mb-3">
+                        <Link to="/forgot">Forgot Password?</Link>
+                    </div>
 
-            <button className="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                    <button className="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
 
-        </form>
+                </Form>
+            </Grid.Column>
+        </Grid>
     );
 }
 

@@ -1,13 +1,16 @@
 import React from 'react';
+import Notebook from './Notebook';
 
 const Home = ({user}: {user: any}) => {
-    let message = 'You are not logged in!';
+    let message;
     if(user) {
-        message = `Hi ${user.first_name} ${user.last_name}!`;
+        message = (<Notebook />);
+    } else {
+        message = 'You are not logged in!'
     }
     
     return (
-        <div className="container"> 
+        <div> 
             {message}
         </div>
     );
