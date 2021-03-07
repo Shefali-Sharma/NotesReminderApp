@@ -6,6 +6,7 @@ import Login from "./pages/Login"
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Nav from './components/Nav';
+import Forgot from './pages/Forgot';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -35,11 +36,10 @@ function App() {
         <abc className="text-center">
           <main className="form-signin">
             <div className="App">
-
               <Route path="/" exact component={() => <Home user={user} />} />
               <Route path="/login" component={() => <Login setLogin={() => setLogin(true)}/>} />
               <Route path="/register" component={Register} />
-
+              <Route path="/forgot" component={Forgot} />
             </div>
           </main>
         </abc>
