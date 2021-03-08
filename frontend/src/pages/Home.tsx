@@ -12,20 +12,34 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
   const [deleteSubject, setDeleteSubject] = useState("");
   const [notes, setNotes] = useState([]);
   const [notebooks, setNotebooks] = useState([]);
+  const [isNew, setIsNew] = useState(true);
 
-  const submit = async (e: SyntheticEvent) => {
+  const submitCreate = async (e: SyntheticEvent) => {
     e.preventDefault();
 
-    const response = await axios.post("http://localhost:8000/api/note", {
+    await axios.post("http://localhost:8000/api/note", {
       subject: subject,
       content: content,
     });
+
+    setIsNew(false);
+  };
+
+  const submitEdit = async (e: SyntheticEvent) => {
+    e.preventDefault();
+
+    await axios.put("http://localhost:8000/api/note", {
+      subject: subject,
+      content: content,
+    });
+
+    setIsNew(false);
   };
 
   const submitDelete = async (e: SyntheticEvent) => {
     e.preventDefault();
 
-    const response = await axios.delete(
+    await axios.delete(
       "http://localhost:8000/api/note/" + deleteSubject
     );
   };
@@ -51,7 +65,14 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
     console.log(response.data);
     setSubject(response.data[0].subject);
     setContent(response.data[0].content);
+    setIsNew(false);
   };
+
+  const emptyForm = async () => {
+    setSubject("");
+    setContent("");
+    setIsNew(true);
+  }
 
   let message;
   if (user) {
@@ -123,6 +144,15 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                   <div className="list-group-item list-group-item-dark">
                     Notes
                   </div>
+                  <button
+                      type="button"
+                      className="list-group-item list-group-item-action list-group-item-primary"
+                      onClick={() => {
+                        emptyForm();
+                      }}
+                    >
+                      Create New Note
+                    </button>
                   {notes.map(({ subject }: { subject: string }) => (
                     <button
                       type="button"
@@ -138,7 +168,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
               </Grid.Column>
               <Grid.Column>
                 <form
-                  onSubmit={submit}
+                  onSubmit={isNew ? submitCreate: submitEdit}
                   className="text-center border border-light p-2"
                 >
                   <h5 className="card-header info-color white-text text-center py-4">
