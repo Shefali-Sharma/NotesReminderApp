@@ -20,6 +20,7 @@ func Setup(app *fiber.App) {
 	app.Delete("/api/note/:subject", controllers.DeleteNote)
 	app.Get("/api/note/:subject", controllers.GetNote)
 	app.Get("/api/noteall", controllers.GetNoteAll)
+	app.Get("/api/notefilter/:notes", controllers.GetNoteFilter)
 
 	app.Post("/api/notebook", controllers.CreateNoteBook)
 	app.Put("/api/notebook", controllers.EditNoteBook)

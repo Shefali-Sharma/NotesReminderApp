@@ -3,7 +3,9 @@ package controllers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"notes-reminder-app/models"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -175,15 +177,60 @@ func GetNote(c *fiber.Ctx) error {
 
 	var filter bson.M = bson.M{}
 
-	// var data map[string]string
-
-	// err = c.BodyParser(&data)
-
-	// if err != nil {
-	// 	return err
-	// }
-
 	filter = bson.M{"subject": c.Params("subject"), "email": user.Email}
+
+	var results []bson.M
+	cur, err := collection.Find(context.Background(), filter)
+	defer cur.Close(context.Background())
+
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find note",
+		})
+	}
+
+	cur.All(context.Background(), &results)
+
+	if results == nil {
+		c.SendStatus(404)
+		return c.JSON(fiber.Map{
+			"message": "Unable to find note",
+		})
+	}
+
+	response, _ := json.Marshal(results)
+
+	return c.Send(response)
+}
+
+// GetNoteFilter returns only the notes asked for
+func GetNoteFilter(c *fiber.Ctx) error {
+	user, err := GetCurrentUser(c)
+
+	if err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "Unauthenticated user",
+		})
+	}
+
+	collection, err := getMongoDbCollection("notesDB", "notes")
+
+	if err != nil {
+		c.Status(500)
+		return c.JSON(fiber.Map{
+			"message": "Unable to connect to NotesDB",
+		})
+	}
+
+	notes := strings.Split(c.Params("notes"), "-")
+
+	fmt.Println(notes)
+
+	var filter bson.M = bson.M{}
+
+	filter = bson.M{"subject": bson.M{"$in": notes}, "email": user.Email}
 
 	var results []bson.M
 	cur, err := collection.Find(context.Background(), filter)
