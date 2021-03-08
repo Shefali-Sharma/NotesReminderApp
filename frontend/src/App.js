@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Redirect, Route } from 'react-router-dom'
+import { BrowserRouter, Route } from 'react-router-dom'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Login from "./pages/Login"

@@ -1,7 +1,6 @@
 import React, { SyntheticEvent, useState } from "react";
-import { Button, Container, Dropdown, Form, Grid } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import axios from "axios";
-import { Redirect } from "react-router";
 
 interface HomeProps {
   user: any;
@@ -11,7 +10,6 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
   const [deleteSubject, setDeleteSubject] = useState("");
-  const [notify, setNotify] = useState(false);
   const [notes, setNotes] = useState([]);
   const [notebooks, setNotebooks] = useState([]);
 
@@ -22,12 +20,6 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
       subject: subject,
       content: content,
     });
-
-    if (response.status == 200) {
-      setNotify(true);
-    } else {
-      setNotify(false);
-    }
   };
 
   const submitDelete = async (e: SyntheticEvent) => {
@@ -36,12 +28,6 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
     const response = await axios.delete(
       "http://localhost:8000/api/note/" + deleteSubject
     );
-
-    if (response.status == 200) {
-      setNotify(true);
-    } else {
-      setNotify(false);
-    }
   };
 
   const getAllNotes = async (e: SyntheticEvent) => {
@@ -60,15 +46,12 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
     setNotebooks(response.data);
   };
 
-  let info;
-
-  if (notify) {
-    info = (
-      <div className={"alert alert-success"} role="alert">
-        Note created successfully!
-      </div>
-    );
-  }
+  const getNote = async (s: string) => {
+    const response = await axios.get("http://localhost:8000/api/note/" + s);
+    console.log(response.data);
+    setSubject(response.data[0].subject);
+    setContent(response.data[0].content);
+  };
 
   let message;
   if (user) {
@@ -90,11 +73,10 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                     >
                       All Notes
                     </button>
-                    </div>
-                    </Grid.Row>
-                    <Grid.Row>
-
-                    <div style={{ width: "220px" }} className="list-group p-3">
+                  </div>
+                </Grid.Row>
+                <Grid.Row>
+                  <div style={{ width: "220px" }} className="list-group p-3">
                     <button
                       type="button"
                       className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0"
@@ -110,11 +92,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                         {name}
                       </button>
                     ))}
-                    </div>
-
-
-                   
-                  
+                  </div>
                 </Grid.Row>
                 <Grid.Row>
                   <form
@@ -149,6 +127,9 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                     <button
                       type="button"
                       className="list-group-item list-group-item-action"
+                      onClick={() => {
+                        getNote(subject);
+                      }}
                     >
                       {subject}
                     </button>
@@ -161,7 +142,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                   className="text-center border border-light p-2"
                 >
                   <h5 className="card-header info-color white-text text-center py-4">
-                    <strong>Create Note</strong>
+                    <strong>Note</strong>
                   </h5>
                   <input
                     type="text"
@@ -169,19 +150,21 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                     placeholder="Subject"
                     required
                     onChange={(e) => setSubject(e.target.value)}
+                    value={subject}
                   />
                   <textarea
-                    style={{ width: "500px", height: "500px" }}
+                    style={{ width: "550px", height: "500px" }}
                     className="form-control"
                     placeholder="Write your note here..."
                     onChange={(e) => setContent(e.target.value)}
+                    value={content}
                   />
                   <br />
                   <button
                     className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0"
                     type="submit"
                   >
-                    Create Note
+                    Save
                   </button>
                 </form>
               </Grid.Column>

@@ -175,15 +175,15 @@ func GetNote(c *fiber.Ctx) error {
 
 	var filter bson.M = bson.M{}
 
-	var data map[string]string
+	// var data map[string]string
 
-	err = c.BodyParser(&data)
+	// err = c.BodyParser(&data)
 
-	if err != nil {
-		return err
-	}
+	// if err != nil {
+	// 	return err
+	// }
 
-	filter = bson.M{"subject": data["subject"], "email": user.Email}
+	filter = bson.M{"subject": c.Params("subject"), "email": user.Email}
 
 	var results []bson.M
 	cur, err := collection.Find(context.Background(), filter)
