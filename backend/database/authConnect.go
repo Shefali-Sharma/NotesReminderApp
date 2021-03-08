@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 // AuthConnect is used for establishing connection with Auth Database
 func AuthConnect() {
-	dsn := "host=localhost user=root password=root dbname=notesauth port=5434 sslmode=disable"
+	dsn := "host=awsdatabaseinstance.cnakzmbnm6pj.us-east-1.rds.amazonaws.com user=postgres password=root1234 dbname=awsdatabase port=5432 sslmode=disable"
 	connection, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
