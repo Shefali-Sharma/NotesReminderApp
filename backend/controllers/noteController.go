@@ -232,14 +232,6 @@ func GetNoteAll(c *fiber.Ctx) error {
 
 	var filter bson.M = bson.M{}
 
-	var data map[string]string
-
-	err = c.BodyParser(&data)
-
-	if err != nil {
-		return err
-	}
-
 	filter = bson.M{"email": user.Email}
 
 	queryOptions := options.FindOptions{}

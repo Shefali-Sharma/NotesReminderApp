@@ -245,14 +245,6 @@ func GetNoteBookAll(c *fiber.Ctx) error {
 
 	var filter bson.M = bson.M{}
 
-	var data map[string]string
-
-	err = c.BodyParser(&data)
-
-	if err != nil {
-		return err
-	}
-
 	filter = bson.M{"email": user.Email}
 
 	queryOptions := options.FindOptions{}
@@ -283,3 +275,19 @@ func GetNoteBookAll(c *fiber.Ctx) error {
 
 	return c.Send(response)
 }
+
+// var results []primitive.M
+// 	for cur.Next(context.Background()) {
+// 		var result bson.M
+// 		e := cur.Decode(&result)
+// 		if e != nil {
+// 			c.SendStatus(400)
+// 			return c.JSON(fiber.Map{
+// 				"message": "Unable to get notebooks",
+// 			})
+// 		}
+// 		delete(result ,"_id")
+// 		// fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+// 		results = append(results, result)
+
+// 	}
