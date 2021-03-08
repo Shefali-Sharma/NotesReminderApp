@@ -40,7 +40,6 @@ const Login = ({ setLogin }: { setLogin: Function }) => {
             className="form-control"
             placeholder="Email"
             required
-            autoFocus
             onChange={(e) => setEmail(e.target.value)}
           />
 
