@@ -137,15 +137,7 @@ func DeleteNote(c *fiber.Ctx) error {
 		})
 	}
 
-	var data map[string]string
-
-	err = c.BodyParser(&data)
-
-	if err != nil {
-		return err
-	}
-
-	filter := bson.M{"subject": data["subject"], "email": user.Email}
+	filter := bson.M{"subject": c.Params("subject"), "email": user.Email}
 
 	res, err := collection.DeleteOne(context.Background(), filter)
 
