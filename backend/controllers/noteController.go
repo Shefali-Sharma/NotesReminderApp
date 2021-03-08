@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"notes-reminder-app/models"
 	"strings"
 	"time"
@@ -139,7 +138,24 @@ func DeleteNote(c *fiber.Ctx) error {
 		})
 	}
 
-	filter := bson.M{"subject": c.Params("subject"), "email": user.Email}
+	subject := c.Params("subject")
+
+	if strings.Contains(subject, "%20") {
+		splitArr := strings.Split(subject, "%20")
+		others := ""
+
+		for _, sarr := range splitArr {
+			if others == "" {
+				others = sarr
+			} else {
+				others = others + " " + sarr
+			}
+
+		}
+		subject = others
+	}
+
+	filter := bson.M{"subject": subject, "email": user.Email}
 
 	res, err := collection.DeleteOne(context.Background(), filter)
 
@@ -177,7 +193,24 @@ func GetNote(c *fiber.Ctx) error {
 
 	var filter bson.M = bson.M{}
 
-	filter = bson.M{"subject": c.Params("subject"), "email": user.Email}
+	subject := c.Params("subject")
+
+	if strings.Contains(subject, "%20") {
+		splitArr := strings.Split(subject, "%20")
+		others := ""
+
+		for _, sarr := range splitArr {
+			if others == "" {
+				others = sarr
+			} else {
+				others = others + " " + sarr
+			}
+
+		}
+		subject = others
+	}
+
+	filter = bson.M{"subject": subject, "email": user.Email}
 
 	var results []bson.M
 	cur, err := collection.Find(context.Background(), filter)
@@ -225,12 +258,33 @@ func GetNoteFilter(c *fiber.Ctx) error {
 	}
 
 	notes := strings.Split(c.Params("notes"), "-")
+	updatedNotes := make([]string, len(notes))
 
-	fmt.Println(notes)
+	for _, singleNote := range notes {
+		subject := singleNote
+
+		if strings.Contains(subject, "%20") {
+			splitArr := strings.Split(subject, "%20")
+			var others string
+
+			for _, sarr := range splitArr {
+				if others == "" {
+					others = sarr
+				} else {
+					others = others + " " + sarr
+				}
+
+			}
+
+			updatedNotes = append(updatedNotes, others)
+
+		}
+
+	}
 
 	var filter bson.M = bson.M{}
 
-	filter = bson.M{"subject": bson.M{"$in": notes}, "email": user.Email}
+	filter = bson.M{"subject": bson.M{"$in": updatedNotes}, "email": user.Email}
 
 	var results []bson.M
 	cur, err := collection.Find(context.Background(), filter)
