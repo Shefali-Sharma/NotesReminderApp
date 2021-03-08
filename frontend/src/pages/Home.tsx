@@ -80,7 +80,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
               <Grid>
                 <Grid.Row>
                   <div style={{ width: "220px" }} className="list-group p-3">
-                    <div className="list-group-item info-color waves-effect">
+                    <div className="list-group-item list-group-item-dark">
                       Notebooks
                     </div>
                     <button
