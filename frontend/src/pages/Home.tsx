@@ -74,6 +74,19 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
     setIsNew(true);
   }
 
+  const filterNotes = async ( n: any[]) => {
+    var notelist = ""
+    n.map(note => {
+      notelist = notelist + note + "-"
+    });
+    notelist = notelist.slice(0, -1)
+
+    const response = await axios.get("http://localhost:8000/api/notefilter/" + notelist);
+    console.log(response.data);
+
+    setNotes(response.data)
+  }
+
   let message;
   if (user) {
     message = (
@@ -105,10 +118,11 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                     >
                       My Notebooks
                     </button>
-                    {notebooks.map(({ name }: { name: string }) => (
+                    {notebooks.map(({ name, notes }: { name: string, notes: [] }) => (
                       <button
                         type="button"
                         className="list-group-item list-group-item-action"
+                        onClick={() => filterNotes(notes)}
                       >
                         {name}
                       </button>
@@ -211,3 +225,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
 };
 
 export default Home;
+function len(notes: any) {
+  throw new Error("Function not implemented.");
+}
+
