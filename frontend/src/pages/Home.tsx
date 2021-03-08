@@ -1,5 +1,5 @@
 import React, { SyntheticEvent, useState } from "react";
-import { Container, Form, Grid } from "semantic-ui-react";
+import { Button, Container, Dropdown, Form, Grid } from "semantic-ui-react";
 import axios from "axios";
 import { Redirect } from "react-router";
 
@@ -90,19 +90,31 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                     >
                       All Notes
                     </button>
+                    </div>
+                    </Grid.Row>
+                    <Grid.Row>
+
+                    <div style={{ width: "220px" }} className="list-group p-3">
                     <button
                       type="button"
-                      className="list-group-item list-group-item-action"
+                      className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0"
+                      onClick={getAllNotebooks}
                     >
-                      Notebook1
+                      My Notebooks
                     </button>
-                    <button
-                      type="button"
-                      className="list-group-item list-group-item-action"
-                    >
-                      NoteBook2
-                    </button>
-                  </div>
+                    {notebooks.map(({ name }: { name: string }) => (
+                      <button
+                        type="button"
+                        className="list-group-item list-group-item-action"
+                      >
+                        {name}
+                      </button>
+                    ))}
+                    </div>
+
+
+                   
+                  
                 </Grid.Row>
                 <Grid.Row>
                   <form
