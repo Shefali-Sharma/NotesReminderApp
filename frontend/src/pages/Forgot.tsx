@@ -1,5 +1,6 @@
 import React, { SyntheticEvent, useState } from "react";
 import axios from "axios";
+import { Grid } from "semantic-ui-react";
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
@@ -44,24 +45,33 @@ const Forgot = () => {
   }
 
   return (
-    <form onSubmit={submit}>
-      {info}
+    <Grid
+      centered
+      textAlign="right"
+      style={{ height: "100vh" }}
+      verticalAlign="middle"
+    >
+      <Grid.Column style={{ maxWidth: 450 }}>
+        <form onSubmit={submit}>
+          {info}
 
-      <h1 className="h3 mb-3 fw-normal">Please set your email</h1>
+          <h1 className="h3 mb-3 fw-normal">Please set your email</h1>
 
-      <input
-        type="email"
-        className="form-control mb-3"
-        placeholder="Email"
-        required
-        autoFocus
-        onChange={(e) => setEmail(e.target.value)}
-      />
+          <input
+            type="email"
+            className="form-control mb-3"
+            placeholder="Email"
+            required
+            autoFocus
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-      <button className="w-100 btn btn-lg btn-primary" type="submit">
-        Reset
-      </button>
-    </form>
+          <button className="w-100 btn btn-lg btn-primary" type="submit">
+            Reset
+          </button>
+        </form>
+      </Grid.Column>
+    </Grid>
   );
 };
 

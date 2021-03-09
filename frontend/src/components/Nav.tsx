@@ -1,12 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
+import Login from '../pages/Login';
 
 const Nav = ({ user, setLogin }: { user: any , setLogin: Function}) => {
     const logout = async () => {
         await axios.post("http://localhost:8000/api/logout", {});
 
-        setLogin();
+        setLogin(false);
     }
 
     let links;
