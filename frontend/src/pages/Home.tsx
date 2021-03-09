@@ -294,7 +294,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
           <main role="main" className="inner cover p-5 m-5">
             <h1 className="cover-heading">Notes Application</h1>
             <p className="lead">
-              One place for all your notes.
+              Capture ideas and accomplish more.
               <br />
               Create, Write, Edit and Share your Notes with others!
               <br />
