@@ -29,6 +29,17 @@ function App() {
   
         }
       )();
+    } 
+    else if (login == false){(
+      async () => {
+        try {
+          const response = await axios.get('http://localhost:8000/api/user');
+          let user = response.data;
+          setUser(user);
+        } catch (e) {
+          setUser(null);
+        }
+      })();
     }
     
   });
