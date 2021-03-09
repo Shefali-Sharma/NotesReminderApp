@@ -17,6 +17,9 @@ const Nav = ({ user, setLogin }: { user: any , setLogin: Function}) => {
             <li className="nav-item active">
                 <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
             </li>
+            <li className="nav-item active">
+                <Link className="nav-link" to="/doc">Docs</Link>
+            </li>
             <li className="nav-item">
                 <Link className="nav-link" onClick={logout} to="/">Logout</Link>
             </li>
@@ -27,6 +30,9 @@ const Nav = ({ user, setLogin }: { user: any , setLogin: Function}) => {
         <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
                 <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
+            </li>
+            <li className="nav-item active">
+                <Link className="nav-link" to="/doc">Docs</Link>
             </li>
             <li className="nav-item">
                 <Link className="nav-link" to="/login">Login</Link>

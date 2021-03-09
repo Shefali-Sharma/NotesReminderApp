@@ -12,6 +12,8 @@ func main() {
 
 	database.AuthConnect()
 
+	database.Connect()
+
 	app := fiber.New()
 
 	// To allow different ports of frontend and backend - brower will block that.
