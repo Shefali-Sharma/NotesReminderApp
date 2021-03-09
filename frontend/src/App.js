@@ -9,6 +9,7 @@ import Nav from './components/Nav';
 import Forgot from './pages/Forgot';
 import Reset from './pages/Reset';
 import Documentation from './pages/Documentation.tsx';
+import ShareNote from './pages/ShareNote';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -37,6 +38,7 @@ function App() {
         <Nav user={user} setLogin={() => setLogin(false)}/>
         <Route path="/" exact component={() => <Home user={user}/>} />
         <Route path="/doc" component={Documentation} />
+        <Route path="/share" render={(props) => <ShareNote {...props}/>}/>
         {!login && (
           <div style={{ verticalAlign: "center", paddingLeft: "600px", paddingTop: "200px" }}>
               <Route path="/login" component={() => <Login setLogin={() => setLogin(true)}/>} />

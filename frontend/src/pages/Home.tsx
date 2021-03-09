@@ -1,7 +1,8 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import { Grid, GridColumn } from "semantic-ui-react";
 import axios from "axios";
-import { Redirect } from "react-router";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PdfDocument from "./PdfDocument";
 
 interface HomeProps {
   user: any;
@@ -14,6 +15,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
   const [notes, setNotes] = useState([]);
   const [notebooks, setNotebooks] = useState([]);
   const [isNew, setIsNew] = useState(true);
+  const [isClient, setIsClient] = useState(false);
 
   const submitCreate = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -24,6 +26,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
     });
 
     setIsNew(false);
+    setIsClient(false);
   };
 
   const submitEdit = async (e: SyntheticEvent) => {
@@ -40,9 +43,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
   const submitDelete = async (e: SyntheticEvent) => {
     e.preventDefault();
 
-    await axios.delete(
-      "http://localhost:8000/api/note/" + deleteSubject
-    );
+    await axios.delete("http://localhost:8000/api/note/" + deleteSubject);
   };
 
   const getAllNotes = async (e: SyntheticEvent) => {
@@ -67,26 +68,33 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
     setSubject(response.data[0].subject);
     setContent(response.data[0].content);
     setIsNew(false);
+    setIsClient(false);
   };
 
   const emptyForm = async () => {
     setSubject("");
     setContent("");
     setIsNew(true);
-  }
+  };
 
-  const filterNotes = async ( n: any[]) => {
-    var notelist = ""
-    n.map(note => {
-      notelist = notelist + note + "-"
+  const filterNotes = async (n: any[]) => {
+    var notelist = "";
+    n.map((note) => {
+      notelist = notelist + note + "-";
     });
-    notelist = notelist.slice(0, -1)
+    notelist = notelist.slice(0, -1);
 
-    const response = await axios.get("http://localhost:8000/api/notefilter/" + notelist);
+    const response = await axios.get(
+      "http://localhost:8000/api/notefilter/" + notelist
+    );
     console.log(response.data);
 
-    setNotes(response.data)
-  }
+    setNotes(response.data);
+  };
+
+  const CallShareNote = () => {
+    setIsClient(true);
+  };
 
   let message;
   if (user) {
@@ -119,15 +127,17 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                     >
                       My Notebooks
                     </button>
-                    {notebooks.map(({ name, notes }: { name: string, notes: [] }) => (
-                      <button
-                        type="button"
-                        className="list-group-item list-group-item-action"
-                        onClick={() => filterNotes(notes)}
-                      >
-                        {name}
-                      </button>
-                    ))}
+                    {notebooks.map(
+                      ({ name, notes }: { name: string; notes: [] }) => (
+                        <button
+                          type="button"
+                          className="list-group-item list-group-item-action"
+                          onClick={() => filterNotes(notes)}
+                        >
+                          {name}
+                        </button>
+                      )
+                    )}
                   </div>
                 </Grid.Row>
                 <Grid.Row>
@@ -160,14 +170,14 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                     Notes
                   </div>
                   <button
-                      type="button"
-                      className="list-group-item list-group-item-action list-group-item-primary"
-                      onClick={() => {
-                        emptyForm();
-                      }}
-                    >
-                      Create New Note
-                    </button>
+                    type="button"
+                    className="list-group-item list-group-item-action list-group-item-primary"
+                    onClick={() => {
+                      emptyForm();
+                    }}
+                  >
+                    Create New Note
+                  </button>
                   {notes.map(({ subject }: { subject: string }) => (
                     <button
                       type="button"
@@ -182,13 +192,43 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                 </div>
               </Grid.Column>
               <Grid.Column>
-                <form
-                  onSubmit={isNew ? submitCreate: submitEdit}
-                  className="text-center border border-light p-2"
-                >
+                <div className="text-right border border-light p-2">
                   <h5 className="card-header info-color white-text text-center py-4">
                     <strong>Note</strong>
                   </h5>
+                  <button
+                    className="btn btn-outline-info btn-rounded my-1 waves-effect z-depth-0"
+                    onClick={CallShareNote}
+                  >
+                    Share
+                  </button>
+                  {isClient && (
+                    <PDFDownloadLink
+                      style={{
+                        fontWeight: "bold",
+                        textDecoration: "none",
+                        backgroundColor: "#EEEEEE",
+                        color: "#333333",
+                        padding: "7px",
+                        border: "1px",
+                        borderStyle: "solid",
+                        margin: "10px",
+                      }}
+                      document={
+                        <PdfDocument subject={subject} content={content} />
+                      }
+                      fileName="sharedNote.pdf"
+                    >
+                      {({ blob, url, loading, error }) =>
+              loading ? "Loading document..." : "Download Note"
+            }
+                    </PDFDownloadLink>
+                  )}
+                </div>
+                <form
+                  onSubmit={isNew ? submitCreate : submitEdit}
+                  className="text-center border border-light p-2"
+                >
                   <input
                     type="text"
                     className="form-control"
@@ -225,9 +265,11 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
           <main role="main" className="inner cover p-5 m-5">
             <h1 className="cover-heading">Notes Application</h1>
             <p className="lead">
-              One place for all your notes.<br/>
-              Create, Write, Edit and Share your Notes with others!<br/>
-              <br/>
+              One place for all your notes.
+              <br />
+              Create, Write, Edit and Share your Notes with others!
+              <br />
+              <br />
               One place for all your Notes!
             </p>
           </main>
@@ -243,4 +285,3 @@ export default Home;
 function len(notes: any) {
   throw new Error("Function not implemented.");
 }
-

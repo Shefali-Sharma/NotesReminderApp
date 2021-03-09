@@ -5,7 +5,7 @@
 ### Build application
 > docker-compose build
 
-### Launch applicatiom
+### Launch application
 > docker-compose up
 
 ## Starting Frontend
