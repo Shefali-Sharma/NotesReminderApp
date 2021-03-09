@@ -3,17 +3,30 @@ import { convertTypeAcquisitionFromJson } from "typescript";
 
 const Documentation = () => {
   var createNoteJSON = {
-    subject: "newNote",
-    content: "Updated content for the 2nd note! :D",
+    subject: "my Example Note",
+    content: "Content for my note! :D",
   };
 
   var editNoteJSON = {
-    subject: "newNote",
-    content: "Updated content for the 2nd note! :D",
+    subject: "my Example Note",
+    content: "Updated content for the note!",
   };
 
   var createNoteJSONMessage = JSON.stringify(createNoteJSON, undefined, 2);
   var editNoteJSONMessage = JSON.stringify(editNoteJSON, undefined, 2);
+
+  var createNotebookJSON = {
+    name: "NoteBook 1",
+    notes: "my Example Note, another Example Note",
+  };
+
+  var editNotebookJSON = {
+    name: "NoteBook 1",
+    notes: "another Example Note",
+  };
+
+  var createNotebookJSONMessage = JSON.stringify(createNotebookJSON, undefined, 2);
+  var editNotebookJSONMessage = JSON.stringify(editNotebookJSON, undefined, 2);
 
   var registerJSON = {
     first_name: "Foo",
@@ -21,8 +34,6 @@ const Documentation = () => {
     email: "foo@example.com",
     password: "****",
     password_confirm: "****",
-    name: "NoteBook 1",
-    notes: "Second Note,newNote",
   };
 
   var loginJSON = {
@@ -86,6 +97,39 @@ const Documentation = () => {
 
         <h3 className="cover-heading">Get All Notes</h3>
         <p className="lead border p-2">GET: /api/noteall</p>
+      </div>
+
+      <div className="jumbotron p-2 p-md-3 text-white rounded bg-dark">
+        <div className="col-md-6 px-0">
+          <h2 className="cover-heading">Notebooks APIs</h2>
+        </div>
+      </div>
+
+      <div className="p-2">
+        <h3 className="cover-heading">Create Notebook</h3>
+        <p className="lead border p-2">POST: /api/notebook</p>
+        <p className="border p-2">
+          <pre>
+            <code>{createNotebookJSONMessage}</code>
+          </pre>
+        </p>
+
+        <h3 className="cover-heading">Edit Notebook</h3>
+        <p className="lead border p-2">PUT: /api/notebook</p>
+        <p className="border p-2">
+          <pre>
+            <code>{editNotebookJSONMessage}</code>
+          </pre>
+        </p>
+
+        <h3 className="cover-heading">Delete Notebook</h3>
+        <p className="lead border p-2">DELETE: /api/notebook/:name</p>
+
+        <h3 className="cover-heading">Get Notebook</h3>
+        <p className="lead border p-2">GET: /api/notebook/:name</p>
+
+        <h3 className="cover-heading">Get All Notebooks</h3>
+        <p className="lead border p-2">GET: /api/notebookall</p>
       </div>
 
       <div className="jumbotron p-2 p-md-3 text-white rounded bg-dark">
