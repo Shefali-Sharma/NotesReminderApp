@@ -16,6 +16,23 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
   const [notebooks, setNotebooks] = useState([]);
   const [isNew, setIsNew] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const [isCreateDelete, setIsCreateDelete] = useState(true);
+
+  useEffect(() => {
+    if(isCreateDelete == true) {
+      (
+        async () => {
+          const response = await axios.get("http://localhost:8000/api/noteall");
+
+          console.log(response.data);
+          setNotes(response.data);
+          setIsCreateDelete(false);
+  
+        }
+      )();
+    }
+    
+  });
 
   const submitCreate = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -27,6 +44,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
 
     setIsNew(false);
     setIsClient(false);
+    setIsCreateDelete(true);
   };
 
   const submitEdit = async (e: SyntheticEvent) => {
@@ -44,6 +62,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
     e.preventDefault();
 
     await axios.delete("http://localhost:8000/api/note/" + deleteSubject);
+    setIsCreateDelete(true);
   };
 
   const getAllNotes = async (e: SyntheticEvent) => {
@@ -238,7 +257,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                     value={subject}
                   />
                   <textarea
-                    style={{ width: "550px", height: "500px" }}
+                    style={{ width: "900px", height: "500px" }}
                     className="form-control"
                     placeholder="Write your note here..."
                     onChange={(e) => setContent(e.target.value)}
