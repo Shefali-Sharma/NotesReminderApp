@@ -1,13 +1,15 @@
 import React, { SyntheticEvent, useState } from "react";
 import { Form, Grid } from "semantic-ui-react";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
 
-const Register = () => {
+const Register = ({ setLogin }: { setLogin: Function }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
 
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -20,8 +22,14 @@ const Register = () => {
       password_confirm: confirmPassword,
     });
 
+    setLogin(false);
+    setRedirect(true);
     console.log(response);
   };
+
+  if (redirect) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <Grid

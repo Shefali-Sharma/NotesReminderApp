@@ -53,7 +53,7 @@ function App() {
         {!login && (
           <div style={{ verticalAlign: "center", paddingLeft: "600px", paddingTop: "200px" }}>
               <Route path="/login" component={() => <Login setLogin={() => setLogin(true)}/>} />
-              <Route path="/register" component={Register} />
+              <Route path="/register" component={() => <Register setLogin={() => setLogin(false)} />} />
               <Route path="/forgot" component={Forgot} />
               <Route path="/reset/:token" component={Reset} />
             </div>
