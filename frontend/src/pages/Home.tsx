@@ -1,6 +1,7 @@
 import React, { SyntheticEvent, useState } from "react";
-import { Grid } from "semantic-ui-react";
+import { Grid, GridColumn } from "semantic-ui-react";
 import axios from "axios";
+import { Redirect } from "react-router";
 
 interface HomeProps {
   user: any;
@@ -218,7 +219,21 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
       </div>
     );
   } else {
-    message = "You are not logged in!";
+    message = (
+      <div className="row p-5 m-5">
+        <div className="col-md-6 col-md-offset-3 p-5 m-5">
+          <main role="main" className="inner cover p-5 m-5">
+            <h1 className="cover-heading">Notes Application</h1>
+            <p className="lead">
+              One place for all your notes.<br/>
+              Create, write, edit and share your Notes with others!<br/>
+              <br/>
+              One place for all your Notes!
+            </p>
+          </main>
+        </div>
+      </div>
+    );
   }
 
   return <div>{message}</div>;
