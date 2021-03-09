@@ -41,6 +41,7 @@ function App() {
               <Route path="/register" component={Register} />
               <Route path="/forgot" component={Forgot} />
               <Route path="/reset/:token" component={Reset} />
+              <Route path="/doc" component={Reset} />
             </div>
         )}
       </BrowserRouter>
