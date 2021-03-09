@@ -2,14 +2,25 @@ import React from "react";
 import { convertTypeAcquisitionFromJson } from "typescript";
 
 const Documentation = () => {
+  var createNoteJSON = {
+    subject: "newNote",
+    content: "Updated content for the 2nd note! :D",
+  };
+
+  var editNoteJSON = {
+    subject: "newNote",
+    content: "Updated content for the 2nd note! :D",
+  };
+
+  var createNoteJSONMessage = JSON.stringify(createNoteJSON, undefined, 2);
+  var editNoteJSONMessage = JSON.stringify(editNoteJSON, undefined, 2);
+
   var registerJSON = {
     first_name: "Foo",
     last_name: "Fee",
     email: "foo@example.com",
     password: "****",
     password_confirm: "****",
-    subject: "newNote",
-    content: "Updated content for the 2nd note! :D",
     name: "NoteBook 1",
     notes: "Second Note,newNote",
   };
@@ -41,45 +52,84 @@ const Documentation = () => {
           <h1 className="display-4 font-italic">Documentation</h1>
         </div>
       </div>
-      <h2 className="cover-heading">Authentication APIs</h2>
+      <div className="jumbotron p-2 p-md-3 text-white rounded bg-dark">
+        <div className="col-md-6 px-0">
+          <h2 className="cover-heading">Notes APIs</h2>
+        </div>
+      </div>
 
-      <h3 className="cover-heading">User Registeration</h3>
-      <p className="lead border p-2">POST: /api/register</p>
-      <p className="border p-2">
-        <pre>
-          <code>{registerJSONMessage}</code>
-        </pre>
-      </p>
+      <div className="p-2">
+        <h3 className="cover-heading">Create Note</h3>
+        <p className="lead border p-2">POST: /api/note</p>
+        <p className="border p-2">
+          <pre>
+            <code>{createNoteJSONMessage}</code>
+          </pre>
+        </p>
 
-      <h3 className="cover-heading">Login</h3>
-      <p className="lead border p-2">POST: /api/login</p>
-      <p className="border p-2">
-        <pre>
-          <code>{loginJSONMessage}</code>
-        </pre>
-      </p>
+        <h3 className="cover-heading">Edit Note</h3>
+        <p className="lead border p-2">PUT: /api/note</p>
+        <p className="border p-2">
+          <pre>
+            <code>{editNoteJSONMessage}</code>
+          </pre>
+        </p>
 
-      <h3 className="cover-heading">Logout</h3>
-      <p className="lead border p-2">POST: /api/logout</p>
-      <p className="border p-2">
-        <pre>Empty Body</pre>
-      </p>
+        <h3 className="cover-heading">Delete Note</h3>
+        <p className="lead border p-2">DELETE: /api/note/:subject</p>
 
-      <h3 className="cover-heading">Forgot Password</h3>
-      <p className="lead border p-2">POST: /api/forgot</p>
-      <p className="border p-2">
-        <pre>
-          <code>{forgotJSONMessage}</code>
-        </pre>
-      </p>
+        <h3 className="cover-heading">Get Note</h3>
+        <p className="lead border p-2">GET: /api/note/:subject</p>
 
-      <h3 className="cover-heading">Reset Password</h3>
-      <p className="lead border p-2">POST: /api/reset</p>
-      <p className="border p-2">
-        <pre>
-          <code>{resetJSONMessage}</code>
-        </pre>
-      </p>
+        <h3 className="cover-heading">Get Filtered Notes</h3>
+        <p className="lead border p-2">GET: /api/notefilter/:notes</p>
+
+        <h3 className="cover-heading">Get All Notes</h3>
+        <p className="lead border p-2">GET: /api/noteall</p>
+      </div>
+
+      <div className="jumbotron p-2 p-md-3 text-white rounded bg-dark">
+        <div className="col-md-6 px-0">
+          <h2 className="cover-heading">Authentication APIs</h2>
+        </div>
+      </div>
+
+      <div className="p-2">
+        <h3 className="cover-heading">User Registeration</h3>
+        <p className="lead border p-2">POST: /api/register</p>
+        <p className="border p-2">
+          <pre>
+            <code>{registerJSONMessage}</code>
+          </pre>
+        </p>
+
+        <h3 className="cover-heading">Login</h3>
+        <p className="lead border p-2">POST: /api/login</p>
+        <p className="border p-2">
+          <pre>
+            <code>{loginJSONMessage}</code>
+          </pre>
+        </p>
+
+        <h3 className="cover-heading">Logout</h3>
+        <p className="lead border p-2">POST: /api/logout</p>
+
+        <h3 className="cover-heading">Forgot Password</h3>
+        <p className="lead border p-2">POST: /api/forgot</p>
+        <p className="border p-2">
+          <pre>
+            <code>{forgotJSONMessage}</code>
+          </pre>
+        </p>
+
+        <h3 className="cover-heading">Reset Password</h3>
+        <p className="lead border p-2">POST: /api/reset</p>
+        <p className="border p-2">
+          <pre>
+            <code>{resetJSONMessage}</code>
+          </pre>
+        </p>
+      </div>
     </div>
   );
 };

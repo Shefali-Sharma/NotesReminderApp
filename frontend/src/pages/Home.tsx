@@ -226,7 +226,7 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
             <h1 className="cover-heading">Notes Application</h1>
             <p className="lead">
               One place for all your notes.<br/>
-              Create, write, edit and share your Notes with others!<br/>
+              Create, Write, Edit and Share your Notes with others!<br/>
               <br/>
               One place for all your Notes!
             </p>
