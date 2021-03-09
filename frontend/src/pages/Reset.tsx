@@ -1,6 +1,7 @@
 import React, { SyntheticEvent, useState } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import { Grid } from "semantic-ui-react";
 
 const Reset = ({ match }: { match: any }) => {
   const [password, setPassword] = useState("");
@@ -26,6 +27,13 @@ const Reset = ({ match }: { match: any }) => {
   };
 
   return (
+    <Grid
+      centered
+      textAlign="right"
+      style={{ height: "100vh" }}
+      verticalAlign="middle"
+    >
+      <Grid.Column style={{ maxWidth: 450 }}>
     <form onSubmit={submit}>
       <h1 className="h3 mb-3 fw-normal">Please reset your password</h1>
 
@@ -40,15 +48,18 @@ const Reset = ({ match }: { match: any }) => {
       <input
         type="password"
         className="form-control"
-        placeholder="Password"
+        placeholder="Confirm Password"
         required
         onChange={(e) => setconfirmPassword(e.target.value)}
       />
+      <br/>
 
       <button className="w-100 btn btn-lg btn-primary" type="submit">
         Reset Password
       </button>
     </form>
+    </Grid.Column>
+    </Grid>
   );
 };
 
