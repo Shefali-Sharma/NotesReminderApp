@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Nav from './components/Nav';
 import Forgot from './pages/Forgot';
 import Reset from './pages/Reset';
+import Documentation from './pages/Documentation.tsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -35,13 +36,13 @@ function App() {
       <BrowserRouter>
         <Nav user={user} setLogin={() => setLogin(false)}/>
         <Route path="/" exact component={() => <Home user={user}/>} />
+        <Route path="/doc" component={Documentation} />
         {!login && (
           <div style={{ verticalAlign: "center", paddingLeft: "600px", paddingTop: "200px" }}>
               <Route path="/login" component={() => <Login setLogin={() => setLogin(true)}/>} />
               <Route path="/register" component={Register} />
               <Route path="/forgot" component={Forgot} />
               <Route path="/reset/:token" component={Reset} />
-              <Route path="/doc" component={Reset} />
             </div>
         )}
       </BrowserRouter>
