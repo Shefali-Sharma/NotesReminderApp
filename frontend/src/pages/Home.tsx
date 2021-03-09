@@ -19,19 +19,15 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
   const [isCreateDelete, setIsCreateDelete] = useState(true);
 
   useEffect(() => {
-    if(isCreateDelete == true) {
-      (
-        async () => {
-          const response = await axios.get("http://localhost:8000/api/noteall");
+    if (isCreateDelete == true) {
+      (async () => {
+        const response = await axios.get("http://localhost:8000/api/noteall");
 
-          console.log(response.data);
-          setNotes(response.data);
-          setIsCreateDelete(false);
-  
-        }
-      )();
+        console.log(response.data);
+        setNotes(response.data);
+        setIsCreateDelete(false);
+      })();
     }
-    
   });
 
   const submitCreate = async (e: SyntheticEvent) => {
@@ -62,6 +58,11 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
     e.preventDefault();
 
     await axios.delete("http://localhost:8000/api/note/" + deleteSubject);
+    setIsCreateDelete(true);
+  };
+
+  const deleteNote = async () => {
+    await axios.delete("http://localhost:8000/api/note/" + subject);
     setIsCreateDelete(true);
   };
 
@@ -138,10 +139,10 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                   </div>
                 </Grid.Row>
                 <Grid.Row>
-                  <div style={{ width: "220px" }} className="list-group p-3">
+                  <div style={{ width: "190px", marginLeft: "15px" }} className="list-group">
                     <button
                       type="button"
-                      className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0"
+                      className="btn btn-outline-info btn-rounded btn-block my-2 waves-effect z-depth-0"
                       onClick={getAllNotebooks}
                     >
                       My Notebooks
@@ -211,39 +212,48 @@ const Home: React.FC<Readonly<HomeProps>> = function Home({ user }) {
                 </div>
               </Grid.Column>
               <Grid.Column>
-                <div className="text-right border border-light p-2">
-                  <h5 className="card-header info-color white-text text-center py-4">
+
+              <div className="text-right border border-light p-1">
+                  <h5 className="card-header info-color white-text text-center py-4 m-1">
                     <strong>Note</strong>
                   </h5>
-                  <button
-                    className="btn btn-outline-info btn-rounded my-1 waves-effect z-depth-0"
-                    onClick={CallShareNote}
-                  >
-                    Share
-                  </button>
-                  {isClient && (
-                    <PDFDownloadLink
-                      style={{
-                        fontWeight: "bold",
-                        textDecoration: "none",
-                        backgroundColor: "#EEEEEE",
-                        color: "#333333",
-                        padding: "7px",
-                        border: "1px",
-                        borderStyle: "solid",
-                        margin: "10px",
-                      }}
-                      document={
-                        <PdfDocument subject={subject} content={content} />
-                      }
-                      fileName="sharedNote.pdf"
+                  
+                    <button
+                      className="btn btn-outline-info btn-rounded my-1 waves-effect z-depth-0 m-1"
+                      onClick={deleteNote}
                     >
-                      {({ blob, url, loading, error }) =>
-              loading ? "Loading document..." : "Download Note"
-            }
-                    </PDFDownloadLink>
-                  )}
-                </div>
+                      Delete
+                    </button>
+                    <button
+                      className="btn btn-outline-info btn-rounded my-1 waves-effect z-depth-0 m-1"
+                      onClick={CallShareNote}
+                    >
+                      Share
+                    </button>
+                    {isClient && (
+                      <PDFDownloadLink
+                        style={{
+                          fontWeight: "bold",
+                          textDecoration: "none",
+                          backgroundColor: "#EEEEEE",
+                          color: "#333333",
+                          padding: "7px",
+                          border: "1px",
+                          borderStyle: "solid",
+                          margin: "10px",
+                        }}
+                        document={
+                          <PdfDocument subject={subject} content={content} />
+                        }
+                        fileName="sharedNote.pdf"
+                      >
+                        {({ blob, url, loading, error }) =>
+                          loading ? "Loading document..." : "Download Note"
+                        }
+                      </PDFDownloadLink>
+                    )}
+                  </div>
+
                 <form
                   onSubmit={isNew ? submitCreate : submitEdit}
                   className="text-center border border-light p-2"
